@@ -17,34 +17,34 @@
 #define MAX_INDICES MAX_QUADS * 6
 
 const char* default_shader_vert_source =
-  "#version 330 core\
-  layout(location = 0) in vec2 a_position;\
-  layout(location = 1) in vec2 a_uv;\
-  uniform mat4 u_projection;\
-  uniform mat4 u_view;\
-  out vec2 uv;\
-  void main() {\
-    gl_Position = u_projection * u_view * vec4(a_position, 0.0, 1.0);\
-    uv = a_uv;\
+  "#version 330 core\n\
+  layout(location = 0) in vec2 a_position;\n\
+  layout(location = 1) in vec2 a_uv;\n\
+  uniform mat4 u_projection;\n\
+  uniform mat4 u_view;\n\
+  out vec2 uv;\n\
+  void main() {\n\
+    gl_Position = u_projection * u_view * vec4(a_position, 0.0, 1.0);\n\
+    uv = a_uv;\n\
   }";
 
 const char* framebuffer_shader_vert_source =
-  "#version 330 core\
-  layout(location = 0) in vec2 a_position;\
-  layout(location = 1) in vec2 a_uv;\
-  out vec2 uv;\
-  void main() {\
-    gl_Position = vec4(a_position, 0.0, 1.0);\
-    uv = a_uv;\
+  "#version 330 core\n\
+  layout(location = 0) in vec2 a_position;\n\
+  layout(location = 1) in vec2 a_uv;\n\
+  out vec2 uv;\n\
+  void main() {\n\
+    gl_Position = vec4(a_position, 0.0, 1.0);\n\
+    uv = a_uv;\n\
   }";
 
 const char* texture_shader_frag_source =
-  "#version 330 core\
-  in vec2 uv;\
-  uniform sampler2D u_texture;\
-  out vec4 color;\
-  void main() {\
-    color = texture(u_texture, uv);\
+  "#version 330 core\n\
+  in vec2 uv;\n\
+  uniform sampler2D u_texture;\n\
+  out vec4 color;\n\
+  void main() {\n\
+    color = texture(u_texture, uv);\n\
   }";
 
 struct Vertex {
@@ -149,14 +149,14 @@ void graphics_init(const char* title, const vec2 size) {
   data.vertices = malloc(sizeof(struct Vertex) * MAX_VERTICES);
   
   glm_vec2_copy(size, data.game_size);
-  data.window_size[0] = 1000 * 2.0f;
-  data.window_size[1] = 1000 * 2.0f / (size[0] / size[1]);
+  data.window_size[0] = 500 * 2.0f;
+  data.window_size[1] = 500 * 2.0f / (size[0] / size[1]);
     
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-  data.window = glfwCreateWindow(data.window_size[0] / 2.0f, data.window_size[1] / 2.0f, title, NULL, NULL);
+  data.window = glfwCreateWindow(data.window_size[0], data.window_size[1], title, NULL, NULL);
   if (!data.window) {
     fprintf(stderr, "glfwCreateWindow failed\n");
     glfwTerminate();
@@ -364,7 +364,7 @@ void graphics_start_draw() {
   glBindVertexArray(data.vao);
   glBindBuffer(GL_ARRAY_BUFFER, data.vbo);
   glBindTexture(GL_TEXTURE_2D, data.texture);
-
+  
   unsigned int u_projection = glGetUniformLocation(data.shader, "u_projection");
   unsigned int u_view = glGetUniformLocation(data.shader, "u_view");
   glUniformMatrix4fv(u_projection, 1, GL_FALSE, (float*)data.projection);
@@ -386,8 +386,8 @@ void graphics_end_draw() {
   glfwSwapBuffers(data.window);
 }
 
-void graphics_clear() {
-  glClearColor(0.0, 0.0, 0.0, 1.0);
+void graphics_clear(const float r, const float g, const float b) {
+  glClearColor(r, g, b, 1.0);
   glClear(GL_COLOR_BUFFER_BIT);  
 }
 

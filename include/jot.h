@@ -20,7 +20,7 @@ void jot_load_tex(const char* path);
 
 // drawing
 // -------
-void jot_clear(const jot_color color);
+void jot_clear(const float r, const float g, const float b);
 void jot_draw_sprite(const int u, const int v, const int uv_width, const int uv_height,  const int x, const int y, const int width, const int height, const float rotation);
 // void jot_draw_line(const int x_1, const int y_1, const int width_1, const jot_color color_2, const int x_2, const int y_2, const int width_2);
 // void jot_draw_square(const int x, const int y, const int width, const int height, const jot_color color);

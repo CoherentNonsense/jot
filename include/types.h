@@ -2,10 +2,6 @@
 #define JOT_TYPES_H
 
 typedef unsigned int jot_aud;
-typedef unsigned int jot_color;
-
-#define JOT_RED 0
-#define JOT_BLUE 1
 
 enum KeyCode {
   JOT_KEY_A, JOT_KEY_B, JOT_KEY_C, JOT_KEY_D, JOT_KEY_E,
