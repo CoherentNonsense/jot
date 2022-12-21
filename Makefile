@@ -6,26 +6,27 @@ INCLUDES = -I./include -I./src -I/usr/local/include -I./libs/cglm/include -I./li
 
 ifeq ($(OS), Windows_NT)
 
-all: build/libjot.a
+all: build/libjot.dll
 
 init:
 	mkdir build
 
-build/libjot.a: $(OFILES)
-	ar -rc $@ $(OFILES)
+build/libjot.dll: $(OFILES)
+	gcc -shared -o $@ $(OFILES) -lglfw3 -lgdi32 -lopengl32
 
-install: uninstall build/libjot.a
-	xcopy build\libjot.a C:\MinGW\lib
+install: uninstall build/libjot.dll
+	xcopy build\libjot.dll C:\MinGW\lib
 	xcopy include C:\MinGW\include\jot /E /I
 
 uninstall:
-	del C:\MinGW\lib\libjot.a
+	del C:\MinGW\lib\libjot.dll
 	if exist C:\MinGW\include\jot del /f /s /q C:\MinGW\include\jot
 	if exist C:\MinGW\include\jot rmdir /s /q C:\MinGW\include\jot
 
-demo: build/libjot.a examples/main.c
-	gcc $(INCLUDES) examples/main.c -Lbuild -LC:/MinGW/lib -ljot -lglfw3 -lgdi32 -lopengl32 -o demo.exe
+demo: build/libjot.dll examples/main.c
+	gcc -o build/demo.exe -Iinclude -Lbuild examples/main.c -ljot
 
+# -lglfw3 -lgdi32 -lopengl32
 else
 
 all: build/libjot.a
