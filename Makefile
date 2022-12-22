@@ -26,6 +26,9 @@ uninstall:
 demo: build/libjot.dll examples/main.c
 	gcc -o build/demo.exe -Iinclude -Lbuild examples/main.c -ljot
 
+balls: build/libjot.dll examples/balls.c
+	gcc -o build/balls.exe -Iinclude -Lbuild examples/balls.c -ljot
+
 # -lglfw3 -lgdi32 -lopengl32
 else
 
