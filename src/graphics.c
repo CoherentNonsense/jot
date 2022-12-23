@@ -12,20 +12,29 @@
 #include <stdio.h>
 #include <stb_image/stb_image.h>
 
-#define MAX_QUADS 300
+#define MAX_QUADS 100
 #define MAX_VERTICES MAX_QUADS * 4
 #define MAX_INDICES MAX_QUADS * 6
 
 const char* default_shader_vert_source =
   "#version 330 core\n\
   layout(location = 0) in vec2 a_position;\n\
-  layout(location = 1) in vec2 a_uv;\n\
+  layout(location = 1) in vec2 a_local_position;\n\
+  layout(location = 2) in vec3 a_color;\n\
+  layout(location = 3) in vec2 a_uv;\n\
+  layout(location = 4) in uint a_type;\n\
   uniform mat4 u_projection;\n\
   uniform mat4 u_view;\n\
+  out vec2 local_position;\n\
+  out vec3 color;\n\
   out vec2 uv;\n\
+  flat out uint type;\n\
   void main() {\n\
     gl_Position = u_projection * u_view * vec4(a_position, 0.0, 1.0);\n\
+    local_position = a_local_position;\n\
+    color = a_color;\n\
     uv = a_uv;\n\
+    type = a_type;\n\
   }";
 
 const char* framebuffer_shader_vert_source =
@@ -38,18 +47,39 @@ const char* framebuffer_shader_vert_source =
     uv = a_uv;\n\
   }";
 
-const char* texture_shader_frag_source =
+const char* framebuffer_shader_frag_source =
   "#version 330 core\n\
   in vec2 uv;\n\
+  out vec4 out_color;\n\
   uniform sampler2D u_texture;\n\
-  out vec4 color;\n\
   void main() {\n\
-    color = texture(u_texture, uv);\n\
+    out_color = texture(u_texture, uv);\n\
+  }";
+
+const char* texture_shader_frag_source =
+  "#version 330 core\n\
+  in vec2 local_position;\n\
+  in vec3 color;\n\
+  in vec2 uv;\n\
+  flat in uint type;\n\
+  uniform sampler2D u_texture;\n\
+  out vec4 out_color;\n\
+  void main() {\n\
+    if (type == 0u) {\n\
+      out_color = texture(u_texture, uv);\n\
+    } else {\n\
+      float dist = 1.0 - length(local_position);\n\
+      if (dist < 0.0) { discard; }\n\
+      out_color = vec4(color, 1.0);\n\
+    }\n\
   }";
 
 struct Vertex {
   vec2 position;
+  vec2 local_position;
+  vec3 color;
   vec2 uv;
+  unsigned int type;
 };
 
 struct FramebufferVertex {
@@ -84,8 +114,8 @@ struct GraphicsData {
 static struct GraphicsData data;
 
 static void graphics_flush() {
-  glBindVertexArray(data.vao);
   shader_use(data.shader);
+  glBindVertexArray(data.vao);
   glBufferSubData(
     GL_ARRAY_BUFFER,
     0,
@@ -134,9 +164,11 @@ unsigned int graphics_load_texture(const char* path) {
 
 void graphics_use_texture(unsigned int texture) {
   if (texture != data.texture) {
+    shader_use(data.shader);
     data.texture = texture;
     unsigned int u_texture = glGetUniformLocation(data.shader, "u_texture");
-    glUniform1i(u_texture, texture);
+    // TODO: why 0 and not texture (i think it's because its GL_TEXTURE0 not the texture id)
+    glUniform1i(u_texture, 0);
   }  
 }
 
@@ -178,7 +210,7 @@ void graphics_init(const char* title, const vec2 size) {
   // framebuffer
   data.framebuffer.shader = shader_create(
     framebuffer_shader_vert_source,
-    texture_shader_frag_source
+    framebuffer_shader_frag_source
   );
     
   data.framebuffer.vertices[0] = (struct FramebufferVertex){
@@ -205,7 +237,7 @@ void graphics_init(const char* title, const vec2 size) {
     .position = { 1.0f, 1.0f },
     .uv = { 1.0f, 1.0f },
   };
-  
+    
   glGenVertexArrays(1, &data.framebuffer.vao);      
   glBindVertexArray(data.framebuffer.vao);
   
@@ -265,6 +297,12 @@ void graphics_init(const char* title, const vec2 size) {
   if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
     fprintf(stderr, "Failed to setup framebuffer");
   }
+  
+  shader_use(data.framebuffer.shader);
+  unsigned int u_framebuffer_texture = glGetUniformLocation(data.framebuffer.shader, "u_texture");
+  // TODO: why set to 0 and not data.framebuffer.texture (which is 1)
+  glUniform1i(u_framebuffer_texture, 0);
+
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
   // normal
@@ -296,7 +334,33 @@ void graphics_init(const char* title, const vec2 size) {
     GL_FLOAT,
     GL_FALSE,
     sizeof(struct Vertex),
+    (const void*)offsetof(struct Vertex, local_position)
+  );
+  glEnableVertexAttribArray(2);
+  glVertexAttribPointer(
+    2,
+    3,
+    GL_FLOAT,
+    GL_FALSE,
+    sizeof(struct Vertex),
+    (const void*)offsetof(struct Vertex, color)
+  );
+  glEnableVertexAttribArray(3);
+  glVertexAttribPointer(
+    3,
+    2,
+    GL_FLOAT,
+    GL_FALSE,
+    sizeof(struct Vertex),
     (const void*)offsetof(struct Vertex, uv)
+  );
+  glEnableVertexAttribArray(4);
+  glVertexAttribIPointer(
+    4,
+    1,
+    GL_UNSIGNED_INT,
+    sizeof(struct Vertex),
+    (const void*)offsetof(struct Vertex, type)
   );
   
   unsigned int* indices = malloc(sizeof(unsigned int) * MAX_INDICES);
@@ -335,6 +399,12 @@ void graphics_init(const char* title, const vec2 size) {
     (vec3){0.0f, 1.0f, 0.0f},
     data.view
   );
+  
+  shader_use(data.shader);  
+  unsigned int u_projection = glGetUniformLocation(data.shader, "u_projection");
+  unsigned int u_view = glGetUniformLocation(data.shader, "u_view");
+  glUniformMatrix4fv(u_projection, 1, GL_FALSE, (float*)data.projection);
+  glUniformMatrix4fv(u_view, 1, GL_FALSE, (float*)data.view);
 }
 
 void graphics_terminate() {
@@ -363,12 +433,7 @@ void graphics_start_draw() {
   shader_use(data.shader);
   glBindVertexArray(data.vao);
   glBindBuffer(GL_ARRAY_BUFFER, data.vbo);
-  glBindTexture(GL_TEXTURE_2D, data.texture);
-  
-  unsigned int u_projection = glGetUniformLocation(data.shader, "u_projection");
-  unsigned int u_view = glGetUniformLocation(data.shader, "u_view");
-  glUniformMatrix4fv(u_projection, 1, GL_FALSE, (float*)data.projection);
-  glUniformMatrix4fv(u_view, 1, GL_FALSE, (float*)data.view);
+  glBindTexture(GL_TEXTURE_2D, data.texture);  
 }
 
 void graphics_end_draw() {
@@ -376,9 +441,9 @@ void graphics_end_draw() {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glViewport(0, 0, data.window_size[0], data.window_size[1]);
 
+  shader_use(data.framebuffer.shader);
   glBindVertexArray(data.framebuffer.vao);
   glBindBuffer(GL_ARRAY_BUFFER, data.vbo);
-  shader_use(data.framebuffer.shader);
   glBindTexture(GL_TEXTURE_2D, data.framebuffer.texture);
 
   glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -404,6 +469,7 @@ void graphics_draw(vec2 position, vec2 uv, vec2 size, float rotation) {
   glm_vec2_divs(size, 512.0f, uv_size);
 
   size_t start = data.quad_count * 4;
+  data.vertices[start + 0].type = 0;
   data.vertices[start + 0].position[0] = position[0] - half_size[0];
   data.vertices[start + 0].position[1] = position[1] - half_size[1];
   data.vertices[start + 0].uv[0] = uv_norm[0];
@@ -412,6 +478,7 @@ void graphics_draw(vec2 position, vec2 uv, vec2 size, float rotation) {
   glm_vec2_rotate(data.vertices[start].position, rotation, data.vertices[start].position);
   glm_vec2_add(data.vertices[start].position, position, data.vertices[start].position);
   
+  data.vertices[start + 1].type = 0;
   data.vertices[start + 1].position[0] = position[0] - half_size[0];
   data.vertices[start + 1].position[1] = position[1] + half_size[1];
   data.vertices[start + 1].uv[0] = uv_norm[0];
@@ -420,6 +487,7 @@ void graphics_draw(vec2 position, vec2 uv, vec2 size, float rotation) {
   glm_vec2_rotate(data.vertices[start + 1].position, rotation, data.vertices[start + 1].position);
   glm_vec2_add(data.vertices[start + 1].position, position, data.vertices[start + 1].position);
 
+  data.vertices[start + 2].type = 0;
   data.vertices[start + 2].position[0] = position[0] + half_size[0];  
   data.vertices[start + 2].position[1] = position[1] - half_size[1];
   data.vertices[start + 2].uv[0] = uv_norm[0] + uv_size[0];
@@ -428,6 +496,7 @@ void graphics_draw(vec2 position, vec2 uv, vec2 size, float rotation) {
   glm_vec2_rotate(data.vertices[start + 2].position, rotation, data.vertices[start + 2].position);
   glm_vec2_add(data.vertices[start + 2].position, position, data.vertices[start + 2].position);
     
+  data.vertices[start + 3].type = 0;
   data.vertices[start + 3].position[0] = position[0] + half_size[0];  
   data.vertices[start + 3].position[1] = position[1] + half_size[1];
   data.vertices[start + 3].uv[0] = uv_norm[0] + uv_size[0];
@@ -436,5 +505,44 @@ void graphics_draw(vec2 position, vec2 uv, vec2 size, float rotation) {
   glm_vec2_rotate(data.vertices[start + 3].position, rotation, data.vertices[start + 3].position);
   glm_vec2_add(data.vertices[start + 3].position, position, data.vertices[start + 3].position);
   
+  data.quad_count += 1;
+}
+
+void graphics_draw_circle(vec2 position, float radius, vec3 color) {
+  if (data.quad_count >= MAX_QUADS) {
+    graphics_flush();
+  }
+  
+  float half_radius = radius / 2.0f;
+  
+  size_t start = data.quad_count * 4;
+  data.vertices[start + 0].type = 1;
+  data.vertices[start + 0].position[0] = position[0] - half_radius;
+  data.vertices[start + 0].position[1] = position[1] - half_radius;
+  data.vertices[start + 0].local_position[0] = -1.0f;
+  data.vertices[start + 0].local_position[1] = -1.0f;
+  glm_vec3_copy(color, data.vertices[start + 0].color);
+  
+  data.vertices[start + 1].type = 1;
+  data.vertices[start + 1].position[0] = position[0] - half_radius;
+  data.vertices[start + 1].position[1] = position[1] + half_radius;
+  data.vertices[start + 1].local_position[0] = -1.0f;
+  data.vertices[start + 1].local_position[1] = 1.0f;
+  glm_vec3_copy(color, data.vertices[start + 1].color);
+
+  data.vertices[start + 2].type = 1;
+  data.vertices[start + 2].position[0] = position[0] + half_radius;  
+  data.vertices[start + 2].position[1] = position[1] - half_radius;
+  data.vertices[start + 2].local_position[0] = 1.0f;
+  data.vertices[start + 2].local_position[1] = -1.0f;
+  glm_vec3_copy(color, data.vertices[start + 2].color);
+    
+  data.vertices[start + 3].type = 1;
+  data.vertices[start + 3].position[0] = position[0] + half_radius;  
+  data.vertices[start + 3].position[1] = position[1] + half_radius;
+  data.vertices[start + 3].local_position[0] = 1.0f;
+  data.vertices[start + 3].local_position[1] = 1.0f;
+  glm_vec3_copy(color, data.vertices[start + 3].color);
+
   data.quad_count += 1;
 }

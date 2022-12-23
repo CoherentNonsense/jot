@@ -15,7 +15,9 @@ void graphics_use_texture(unsigned int texture);
 
 void graphics_start_draw();
 void graphics_draw(vec2 position, vec2 uv, vec2 size, float rotation);
-void graphics_draw_color(vec2 position, vec2 uv, vec2 size, float rotation, vec3 color);
+// void graphics_draw_color(vec2 position, vec2 uv, vec2 size, float rotation, vec3 color);
+void graphics_draw_circle(vec2 position, float radius, vec3 color);
+// void graphics_draw_square(vec2 position, vec2 size, vec3 color);
 void graphics_clear(const float r, const float g, const float b);
 void graphics_end_draw();
 

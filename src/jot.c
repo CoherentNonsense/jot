@@ -41,8 +41,12 @@ void jot_clear(const float r, const float g, const float b) {
   graphics_clear(r, g, b);
 }
 
-void jot_draw_sprite(const int u, const int v, const int uv_width, const int uv_height, const int x, const int y, const int width, const int height, const float rotation) {
+void jot_draw_sprite(const float u, const float v, const float uv_width, const float uv_height, const float x, const float y, const float width, const float height, const float rotation) {
   graphics_draw((vec2){x, y}, (vec2){u, v}, (vec2){uv_width, uv_height}, rotation);
+}
+
+void jot_draw_circle(const float x, const float y, const float radius, const float r, const float g, const float b) {
+  graphics_draw_circle((vec2){x, y}, (float)radius, (vec3){r, g, b});
 }
 
 // input
