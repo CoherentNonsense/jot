@@ -1,5 +1,4 @@
 #include <jot/jot.h>
-#include <stdio.h>
 #include <math.h>
 
 int main() {
@@ -14,7 +13,6 @@ int main() {
 
   // game loop
   // ---------
-  printf("STARTING LOOP\n");
   while (jot_update()) {
     float time = jot_get_time();
          

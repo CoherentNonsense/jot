@@ -72,6 +72,7 @@ int main() {
     // draw balls
     jot_clear(0.1f, 0.1f, 0.3f);
     for (int i = 0; i < BALL_COUNT; ++i) {
+      // jot_draw_rect(balls[i].position.x, balls[i].position.y, 16.0f, 16.0f, 1.0f, 0.0f, 1.0f);
       jot_draw_circle(balls[i].position.x, balls[i].position.y, 16, 1.0f, 0.7f, 0.2f);
       // jot_draw_sprite(0.0f, 0.0f, 16.0f, 16.0f, balls[i].position.x, balls[i].position.y, 16.0f, 16.0f, 0.0f);
     }

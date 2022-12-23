@@ -67,9 +67,11 @@ const char* texture_shader_frag_source =
   void main() {\n\
     if (type == 0u) {\n\
       out_color = texture(u_texture, uv);\n\
-    } else {\n\
+    } else if (type == 1u) {\n\
       float dist = 1.0 - length(local_position);\n\
       if (dist < 0.0) { discard; }\n\
+      out_color = vec4(color, 1.0);\n\
+    } else {\n\
       out_color = vec4(color, 1.0);\n\
     }\n\
   }";
@@ -542,6 +544,37 @@ void graphics_draw_circle(vec2 position, float radius, vec3 color) {
   data.vertices[start + 3].position[1] = position[1] + half_radius;
   data.vertices[start + 3].local_position[0] = 1.0f;
   data.vertices[start + 3].local_position[1] = 1.0f;
+  glm_vec3_copy(color, data.vertices[start + 3].color);
+
+  data.quad_count += 1;
+}
+void graphics_draw_rect(vec2 position, vec2 size, vec3 color) {
+  if (data.quad_count >= MAX_QUADS) {
+    graphics_flush();
+  }
+  
+  vec2 half_size;
+  glm_vec2_divs(size, 2, half_size);
+  
+  size_t start = data.quad_count * 4;
+  data.vertices[start + 0].type = 2;
+  data.vertices[start + 0].position[0] = position[0] - half_size[0];
+  data.vertices[start + 0].position[1] = position[1] - half_size[1];
+  glm_vec3_copy(color, data.vertices[start + 0].color);
+  
+  data.vertices[start + 1].type = 2;
+  data.vertices[start + 1].position[0] = position[0] - half_size[0];
+  data.vertices[start + 1].position[1] = position[1] + half_size[1];
+  glm_vec3_copy(color, data.vertices[start + 1].color);
+
+  data.vertices[start + 2].type = 2;
+  data.vertices[start + 2].position[0] = position[0] + half_size[0];  
+  data.vertices[start + 2].position[1] = position[1] - half_size[1];
+  glm_vec3_copy(color, data.vertices[start + 2].color);
+    
+  data.vertices[start + 3].type = 2;
+  data.vertices[start + 3].position[0] = position[0] + half_size[0];  
+  data.vertices[start + 3].position[1] = position[1] + half_size[1];
   glm_vec3_copy(color, data.vertices[start + 3].color);
 
   data.quad_count += 1;

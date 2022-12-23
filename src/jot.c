@@ -49,6 +49,10 @@ void jot_draw_circle(const float x, const float y, const float radius, const flo
   graphics_draw_circle((vec2){x, y}, (float)radius, (vec3){r, g, b});
 }
 
+void jot_draw_rect(const float x, const float y, const float width, const float height, const float r, const float g, const float b) {
+  graphics_draw_rect((vec2){x, y}, (vec2){width, height}, (vec3){r, g, b});
+}
+
 // input
 // -----
 bool jot_get_key(enum KeyCode key) {

@@ -23,8 +23,8 @@ void jot_load_tex(const char* path);
 void jot_clear(const float r, const float g, const float b);
 void jot_draw_sprite(const float u, const float v, const float uv_width, const float uv_height,  const float x, const float y, const float width, const float height, const float rotation);
 void jot_draw_circle(const float x, const float y, const float radius, const float r, const float g, const float b);
+void jot_draw_rect(const float x, const float y, const float width, const float height, const float r, const float g, const float b);
 // void jot_draw_line(const int x_1, const int y_1, const int width_1, const jot_color color_2, const int x_2, const int y_2, const int width_2);
-// void jot_draw_square(const int x, const int y, const int width, const int height, const jot_color color);
 
 // input
 // -----
