@@ -2,11 +2,9 @@ DIRS := *.c
 CFILES := $(foreach DIR, $(DIRS), $(wildcard src/$(DIR)))
 OFILES := $(patsubst src/%.c, build/%.o, $(CFILES))
 
-INCLUDES = -I./include -I./src -I/usr/local/include -I./libs/cglm/include -I./libs/stb/include -I./libs/glad/include
+INCLUDES = -I./include -I./src -I/usr/local/include -I./libs/glfw/include -I./libs/cglm/include -I./libs/stb/include -I./libs/glad/include
 
 ifeq ($(OS), Windows_NT)
-
-INCLUDES += -IC:/MinGW/include
 
 all: build/libjot.dll
 
@@ -14,7 +12,7 @@ init:
 	mkdir build
 
 build/libjot.dll: $(OFILES)
-	gcc -shared -o $@ $(OFILES) -lglfw3 -lgdi32 -lopengl32
+	gcc -shared -o $@ $(OFILES) -L./libs/glfw/build/src -lglfw3 -lgdi32 -lopengl32
 
 install: uninstall build/libjot.dll
 	xcopy build\libjot.dll C:\MinGW\lib
