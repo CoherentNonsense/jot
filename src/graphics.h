@@ -8,6 +8,7 @@ void graphics_terminate();
 
 int graphics_should_close();
 struct GLFWwindow* graphics_get_window();
+float graphics_get_screen_scale();
 void graphics_poll();
 
 unsigned int graphics_load_texture(const char* path);

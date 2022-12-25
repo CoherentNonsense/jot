@@ -13,10 +13,14 @@ enum KeyCode {
 
   JOT_KEY_UP, JOT_KEY_DOWN, JOT_KEY_LEFT, JOT_KEY_RIGHT,
   
-  JOT_KEY_SPACE,
+  JOT_KEY_SPACE, JOT_KEY_ENTER, JOT_KEY_TAB,
+  JOT_KEY_LSHIFT, JOT_KEY_RSHIFT,
+  
+  JOT_LMOUSE, JOT_RMOUSE,
   
   KeyCodeCount,
 };
+
 
 // core
 // ----
@@ -28,7 +32,7 @@ float jot_get_time();
 
 // assets
 // ------
-void jot_load_tex(const char* path);
+void jot_texture(const char* path);
 // jot_aud jot_load_mp3(const char* path);
 
 // drawing
@@ -41,9 +45,11 @@ void jot_draw_rect(const float x, const float y, const float width, const float 
 
 // input
 // -----
-bool jot_get_key(enum KeyCode key);
-bool jot_get_key_up(enum KeyCode key);
-bool jot_get_key_down(enum KeyCode key);
+bool jot_key(enum KeyCode key);
+bool jot_key_up(enum KeyCode key);
+bool jot_key_down(enum KeyCode key);
+float jot_cursor_x();
+float jot_cursor_y();
 
 // audio (TODO)
 // -----

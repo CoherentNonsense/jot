@@ -428,6 +428,10 @@ GLFWwindow* graphics_get_window() {
   return data.window;
 }
 
+float graphics_get_screen_scale() {
+  return data.window_size[0] / data.game_size[0];
+}
+
 void graphics_poll() {
   glfwPollEvents();
 }

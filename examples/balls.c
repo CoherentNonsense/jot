@@ -28,7 +28,7 @@ int main() {
   jot_init("Demo", WIDTH, HEIGHT);
   
   // texture
-  jot_load_tex("resources/spritesheet.png");
+  jot_texture("resources/spritesheet.png");
   
   // data
   // ----
