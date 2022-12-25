@@ -105,6 +105,7 @@ struct GraphicsData {
   unsigned int shader;
   unsigned int quad_count;
   unsigned int texture;
+  vec2 texture_size;
   vec2 game_size;
   vec2 window_size;
   struct Framebuffer framebuffer;
@@ -155,6 +156,9 @@ unsigned int graphics_load_texture(const char* path) {
   
   stbi_image_free(image_data);
 
+  data.texture_size[0] = (float)width;
+  data.texture_size[1] = (float)height;
+  
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
@@ -458,7 +462,7 @@ void graphics_clear(const float r, const float g, const float b) {
   glClear(GL_COLOR_BUFFER_BIT);  
 }
 
-void graphics_draw(vec2 position, vec2 uv, vec2 size, float rotation) {
+void graphics_draw(const vec2 position, const vec2 uv, const vec2 size, const float rotation) {
   if (data.quad_count >= MAX_QUADS) {
     graphics_flush();
   }
@@ -467,8 +471,8 @@ void graphics_draw(vec2 position, vec2 uv, vec2 size, float rotation) {
   glm_vec2_divs(size, 2, half_size);
   vec2 uv_norm;
   vec2 uv_size;
-  glm_vec2_divs(uv, 512.0f, uv_norm);
-  glm_vec2_divs(size, 512.0f, uv_size);
+  glm_vec2_div(uv, data.texture_size, uv_norm);
+  glm_vec2_div(size, data.texture_size, uv_size);
 
   size_t start = data.quad_count * 4;
   data.vertices[start + 0].type = 0;
@@ -510,7 +514,7 @@ void graphics_draw(vec2 position, vec2 uv, vec2 size, float rotation) {
   data.quad_count += 1;
 }
 
-void graphics_draw_circle(vec2 position, float radius, vec3 color) {
+void graphics_draw_circle(const vec2 position, const float radius, const vec3 color) {
   if (data.quad_count >= MAX_QUADS) {
     graphics_flush();
   }
@@ -548,7 +552,7 @@ void graphics_draw_circle(vec2 position, float radius, vec3 color) {
 
   data.quad_count += 1;
 }
-void graphics_draw_rect(vec2 position, vec2 size, vec3 color) {
+void graphics_draw_rect(const vec2 position, const vec2 size, const float rotation, const vec3 color) {
   if (data.quad_count >= MAX_QUADS) {
     graphics_flush();
   }
@@ -561,21 +565,33 @@ void graphics_draw_rect(vec2 position, vec2 size, vec3 color) {
   data.vertices[start + 0].position[0] = position[0] - half_size[0];
   data.vertices[start + 0].position[1] = position[1] - half_size[1];
   glm_vec3_copy(color, data.vertices[start + 0].color);
+  glm_vec2_sub(data.vertices[start + 0].position, position, data.vertices[start + 0].position);
+  glm_vec2_rotate(data.vertices[start + 0].position, rotation, data.vertices[start + 0].position);
+  glm_vec2_add(data.vertices[start + 0].position, position, data.vertices[start + 0].position);
   
   data.vertices[start + 1].type = 2;
   data.vertices[start + 1].position[0] = position[0] - half_size[0];
   data.vertices[start + 1].position[1] = position[1] + half_size[1];
   glm_vec3_copy(color, data.vertices[start + 1].color);
+  glm_vec2_sub(data.vertices[start + 1].position, position, data.vertices[start + 1].position);
+  glm_vec2_rotate(data.vertices[start + 1].position, rotation, data.vertices[start + 1].position);
+  glm_vec2_add(data.vertices[start + 1].position, position, data.vertices[start + 1].position);
 
   data.vertices[start + 2].type = 2;
   data.vertices[start + 2].position[0] = position[0] + half_size[0];  
   data.vertices[start + 2].position[1] = position[1] - half_size[1];
   glm_vec3_copy(color, data.vertices[start + 2].color);
+  glm_vec2_sub(data.vertices[start + 2].position, position, data.vertices[start + 2].position);
+  glm_vec2_rotate(data.vertices[start + 2].position, rotation, data.vertices[start + 2].position);
+  glm_vec2_add(data.vertices[start + 2].position, position, data.vertices[start + 2].position);
     
   data.vertices[start + 3].type = 2;
   data.vertices[start + 3].position[0] = position[0] + half_size[0];  
   data.vertices[start + 3].position[1] = position[1] + half_size[1];
   glm_vec3_copy(color, data.vertices[start + 3].color);
+  glm_vec2_sub(data.vertices[start + 3].position, position, data.vertices[start + 3].position);
+  glm_vec2_rotate(data.vertices[start + 3].position, rotation, data.vertices[start + 3].position);
+  glm_vec2_add(data.vertices[start + 3].position, position, data.vertices[start + 3].position);
 
   data.quad_count += 1;
 }

@@ -1,9 +1,22 @@
 #ifndef JOT_H
 #define JOT_H
 
-#include "types.h"
-
 #include <stdbool.h>
+
+enum KeyCode {
+  JOT_KEY_A, JOT_KEY_B, JOT_KEY_C, JOT_KEY_D, JOT_KEY_E,
+  JOT_KEY_F, JOT_KEY_G, JOT_KEY_H, JOT_KEY_I, JOT_KEY_J,
+  JOT_KEY_K, JOT_KEY_L, JOT_KEY_M, JOT_KEY_N, JOT_KEY_O,
+  JOT_KEY_P, JOT_KEY_Q, JOT_KEY_R, JOT_KEY_S, JOT_KEY_T,
+  JOT_KEY_U, JOT_KEY_V, JOT_KEY_W, JOT_KEY_X, JOT_KEY_Y,
+  JOT_KEY_Z,
+
+  JOT_KEY_UP, JOT_KEY_DOWN, JOT_KEY_LEFT, JOT_KEY_RIGHT,
+  
+  JOT_KEY_SPACE,
+  
+  KeyCodeCount,
+};
 
 // core
 // ----
@@ -23,7 +36,7 @@ void jot_load_tex(const char* path);
 void jot_clear(const float r, const float g, const float b);
 void jot_draw_sprite(const float u, const float v, const float uv_width, const float uv_height,  const float x, const float y, const float width, const float height, const float rotation);
 void jot_draw_circle(const float x, const float y, const float radius, const float r, const float g, const float b);
-void jot_draw_rect(const float x, const float y, const float width, const float height, const float r, const float g, const float b);
+void jot_draw_rect(const float x, const float y, const float width, const float height, const float rotation, const float r, const float g, const float b);
 // void jot_draw_line(const int x_1, const int y_1, const int width_1, const jot_color color_2, const int x_2, const int y_2, const int width_2);
 
 // input
