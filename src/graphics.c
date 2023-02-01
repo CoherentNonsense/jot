@@ -107,7 +107,7 @@ struct GraphicsData {
   unsigned int texture;
   vec2 texture_size;
   vec2 game_size;
-  vec2 window_size;
+  ivec2 window_size;
   struct Framebuffer framebuffer;
   struct Vertex* vertices;
   mat4 projection;
@@ -187,18 +187,21 @@ void graphics_init(const char* title, const vec2 size) {
   data.vertices = malloc(sizeof(struct Vertex) * MAX_VERTICES);
   
   glm_vec2_copy(size, data.game_size);
-  data.window_size[0] = 500 * 2.0f;
-  data.window_size[1] = 500 * 2.0f / (size[0] / size[1]);
+  int initial_width = 1000;
+  int initial_height = 1000.0f / (size[0] / size[1]);
     
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-  data.window = glfwCreateWindow(data.window_size[0], data.window_size[1], title, NULL, NULL);
+  data.window = glfwCreateWindow(initial_width, initial_height, title, NULL, NULL);
+
   if (!data.window) {
     fprintf(stderr, "glfwCreateWindow failed\n");
     glfwTerminate();
   }
+
+  glfwGetFramebufferSize(data.window, &data.window_size[0], &data.window_size[1]);
   
   glfwMakeContextCurrent(data.window);
   glfwSetWindowAspectRatio(data.window, size[0], size[1]);
@@ -429,7 +432,7 @@ GLFWwindow* graphics_get_window() {
 }
 
 float graphics_get_screen_scale() {
-  return data.window_size[0] / data.game_size[0];
+  return (float)data.window_size[0] / data.game_size[0];
 }
 
 void graphics_poll() {

@@ -51,6 +51,9 @@ uninstall:
 demo: build/libjot.a examples/main.c
 	gcc $(INCLUDES) -L./build -lglfw -ljot -o $@ examples/main.c
 
+balls: build/libjot.a examples/balls.c
+	gcc $(INCLUDES) -Iinclude -Lbuild -o $@ examples/balls.c -ljot -lglfw
+
 clean:
 	rm -r -f build demo build/libjot.a
 
