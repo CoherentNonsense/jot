@@ -1,3 +1,4 @@
+#include "jot.h"
 #include <jot/jot.h>
 #include <math.h>
 

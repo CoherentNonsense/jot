@@ -11,6 +11,7 @@ static void set_key(enum KeyCode keycode, int state) {
   key->state = state;
   key->up = 1 - state;
   key->down = state;
+  key->event_tick = 1;
 }
 
 static enum KeyCode convert_key(int key) {
@@ -81,8 +82,12 @@ float input_cursor_y() {
 void input_update() {
   for (int i = 0; i < KeyCodeCount; ++i) {
     struct JotKeyData* key = &data.keys[i];
-    key->down = 0;
-    key->up = 0;
+    if (!key->event_tick) {
+      key->down = 0;
+      key->up = 0;
+    } else {
+      key->event_tick = 0;
+    }
   }
   
   glfwGetCursorPos(data.window, &data.cursor_x, &data.cursor_y);

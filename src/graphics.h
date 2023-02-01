@@ -9,13 +9,15 @@ void graphics_terminate();
 int graphics_should_close();
 struct GLFWwindow* graphics_get_window();
 float graphics_get_screen_scale();
+float graphics_get_pixel_width();
+float graphics_get_pixel_height();
 void graphics_poll();
 
 unsigned int graphics_load_texture(const char* path);
 void graphics_use_texture(unsigned int texture);
 
 void graphics_start_draw();
-void graphics_draw(const vec2 position, const vec2 uv, const vec2 size, const float rotation);
+void graphics_draw(const vec2 position, const vec2 uv, const vec2 size, const vec2 uv_size, const float rotation);
 // void graphics_draw_color(vec2 position, vec2 uv, vec2 size, float rotation, vec3 color);
 void graphics_draw_circle(const vec2 position, const float radius, const vec3 color);
 void graphics_draw_rect(const vec2 position, const vec2 size, const float rotation, const vec3 color);

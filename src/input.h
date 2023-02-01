@@ -9,6 +9,7 @@ struct JotKeyData {
   int state;
   int down;
   int up;
+  int event_tick;
 };
 
 struct JotInputData {

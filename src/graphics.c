@@ -432,7 +432,17 @@ GLFWwindow* graphics_get_window() {
 }
 
 float graphics_get_screen_scale() {
-  return (float)data.window_size[0] / data.game_size[0];
+  int w, h;
+  glfwGetWindowSize(data.window, &w, &h);
+  return w / data.game_size[0];
+}
+
+float graphics_get_pixel_width() {
+  return data.game_size[0];
+}
+
+float graphics_get_pixel_height() {
+  return data.game_size[1];
 }
 
 void graphics_poll() {
@@ -469,7 +479,7 @@ void graphics_clear(const float r, const float g, const float b) {
   glClear(GL_COLOR_BUFFER_BIT);  
 }
 
-void graphics_draw(const vec2 position, const vec2 uv, const vec2 size, const float rotation) {
+void graphics_draw(const vec2 position, const vec2 uv, const vec2 size, const vec2 uv_size, const float rotation) {
   if (data.quad_count >= MAX_QUADS) {
     graphics_flush();
   }
@@ -477,16 +487,16 @@ void graphics_draw(const vec2 position, const vec2 uv, const vec2 size, const fl
   vec2 half_size;
   glm_vec2_divs(size, 2, half_size);
   vec2 uv_norm;
-  vec2 uv_size;
+  vec2 uv_size_norm;
   glm_vec2_div(uv, data.texture_size, uv_norm);
-  glm_vec2_div(size, data.texture_size, uv_size);
+  glm_vec2_div(uv_size, data.texture_size, uv_size_norm);
 
   size_t start = data.quad_count * 4;
   data.vertices[start + 0].type = 0;
   data.vertices[start + 0].position[0] = position[0] - half_size[0];
   data.vertices[start + 0].position[1] = position[1] - half_size[1];
   data.vertices[start + 0].uv[0] = uv_norm[0];
-  data.vertices[start + 0].uv[1] = uv_norm[1] + uv_size[1];
+  data.vertices[start + 0].uv[1] = uv_norm[1] + uv_size_norm[1];
   glm_vec2_sub(data.vertices[start].position, position, data.vertices[start].position);
   glm_vec2_rotate(data.vertices[start].position, rotation, data.vertices[start].position);
   glm_vec2_add(data.vertices[start].position, position, data.vertices[start].position);
@@ -503,7 +513,7 @@ void graphics_draw(const vec2 position, const vec2 uv, const vec2 size, const fl
   data.vertices[start + 2].type = 0;
   data.vertices[start + 2].position[0] = position[0] + half_size[0];  
   data.vertices[start + 2].position[1] = position[1] + half_size[1];
-  data.vertices[start + 2].uv[0] = uv_norm[0] + uv_size[0];
+  data.vertices[start + 2].uv[0] = uv_norm[0] + uv_size_norm[0];
   data.vertices[start + 2].uv[1] = uv_norm[1];
   glm_vec2_sub(data.vertices[start + 2].position, position, data.vertices[start + 2].position);
   glm_vec2_rotate(data.vertices[start + 2].position, rotation, data.vertices[start + 2].position);
@@ -512,8 +522,8 @@ void graphics_draw(const vec2 position, const vec2 uv, const vec2 size, const fl
   data.vertices[start + 3].type = 0;
   data.vertices[start + 3].position[0] = position[0] + half_size[0];  
   data.vertices[start + 3].position[1] = position[1] - half_size[1];
-  data.vertices[start + 3].uv[0] = uv_norm[0] + uv_size[0];
-  data.vertices[start + 3].uv[1] = uv_norm[1] + uv_size[1];  
+  data.vertices[start + 3].uv[0] = uv_norm[0] + uv_size_norm[0];
+  data.vertices[start + 3].uv[1] = uv_norm[1] + uv_size_norm[1];  
   glm_vec2_sub(data.vertices[start + 3].position, position, data.vertices[start + 3].position);
   glm_vec2_rotate(data.vertices[start + 3].position, rotation, data.vertices[start + 3].position);
   glm_vec2_add(data.vertices[start + 3].position, position, data.vertices[start + 3].position);

@@ -48,11 +48,14 @@ uninstall:
 	rm -f /usr/local/lib/libjot.a
 	rm -f -r /usr/local/include/jot
 
-demo: build/libjot.a examples/main.c
+hello: build/libjot.a examples/main.c
 	gcc $(INCLUDES) -L./build -lglfw -ljot -o build/$@ examples/main.c
 
 balls: build/libjot.a examples/balls.c
 	gcc $(INCLUDES) -Iinclude -Lbuild -o build/$@ examples/balls.c -ljot -lglfw
+
+demo: build/libjot.a examples/demo/main.c
+	gcc $(INCLUDES) -Iinclude -Lbuild -o build/$@ examples/demo/main.c -ljot -lglfw
 
 clean:
 	rm -r -f build demo build/libjot.a

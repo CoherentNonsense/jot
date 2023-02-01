@@ -44,7 +44,7 @@ void jot_clear(const float r, const float g, const float b) {
 }
 
 void jot_draw_sprite(const float u, const float v, const float uv_width, const float uv_height, const float x, const float y, const float width, const float height, const float rotation) {
-  graphics_draw((vec2){x, y}, (vec2){u, v}, (vec2){uv_width, uv_height}, rotation);
+  graphics_draw((vec2){x, y}, (vec2){u, v}, (vec2){width, height}, (vec2){uv_width, uv_height}, rotation);
 }
 
 void jot_draw_circle(const float x, const float y, const float radius, const float r, const float g, const float b) {
@@ -95,9 +95,9 @@ bool jot_key_up(enum KeyCode key) {
 }
 
 float jot_cursor_x() {
-  return input_cursor_x() / graphics_get_screen_scale();
+  return input_cursor_x() / graphics_get_screen_scale() - (graphics_get_pixel_width() / 2.0f);
 };
 
 float jot_cursor_y() {
-  return input_cursor_y() / graphics_get_screen_scale();
+  return (graphics_get_pixel_height() / 2.0f) - input_cursor_y() / graphics_get_screen_scale();
 };
