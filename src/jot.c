@@ -4,6 +4,8 @@
 #include "input.h"
 
 #include <cglm/cam.h>
+#include <math.h>
+#include <stdio.h>
 
 void jot_init(const char* title, const int width, const int height) {
   graphics_init(title, (vec2){width, height});
@@ -53,8 +55,29 @@ void jot_draw_rect(const float x, const float y, const float width, const float 
   graphics_draw_rect((vec2){x, y}, (vec2){width, height}, rotation, (vec3){r, g, b});
 }
 
-void jot_draw_quad(const float x_1, const float y_1, const float x_2, const float y_2, const float x_3, const float y_3, const float x_4, const float y_4, const float r, const float g, const float b) {
+void jot_draw_quad(
+  const float x_1, const float y_1,
+  const float x_2, const float y_2,
+  const float x_3, const float y_3,
+  const float x_4, const float y_4,
+  const float r, const float g, const float b
+) {
   graphics_draw_quad((vec2){x_1, y_1}, (vec2){x_2, y_2}, (vec2){x_3, y_3}, (vec2){x_4, y_4}, (vec3){r, g, b});
+}
+
+void jot_draw_line(
+  const float x_1, const float y_1, const float width_1,
+  const float x_2, const float y_2, const float width_2,
+  const float r, const float g, const float b
+) {
+  float angle = atan2f(y_2 - y_1, x_2 - x_1);
+  graphics_draw_quad(
+    (vec2){x_1 - width_1 / 2 * sinf(angle), y_1 + width_1 / 2 * cosf(angle)},
+    (vec2){x_1 + width_1 / 2 * sinf(angle), y_1 - width_1 / 2 * cosf(angle)},
+    (vec2){x_2 + width_2 / 2 * sinf(angle), y_2 - width_2 / 2 * cosf(angle)},
+    (vec2){x_2 - width_2 / 2 * sinf(angle), y_2 + width_2 / 2 * cosf(angle)},
+    (vec3){r, g, b}
+  );
 }
 
 // input

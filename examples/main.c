@@ -18,7 +18,10 @@ int main() {
 
     jot_clear(0.1f, 0.2f, 0.3f);
 
-    jot_draw_sprite(0, 0, 16, 16, sin(time) * 40.0f, cos(time) * 40.0f, 16, 16, -time);
+    float ship_x = sinf(time) * 40.0f;
+    float ship_y = cosf(time) * 40.0f;
+
+    jot_draw_sprite(0, 0, 16, 16, ship_x, ship_y, 16, 16, -time);
   }
 
   // shutdown
