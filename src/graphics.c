@@ -376,10 +376,10 @@ void graphics_init(const char* title, const vec2 size) {
   for (int i = 0, j = 0; i < MAX_INDICES; i += 6, j += 4) {
     indices[i + 0] = j + 0;
     indices[i + 1] = j + 1;
-    indices[i + 2] = j + 2;
+    indices[i + 2] = j + 3;
 
-    indices[i + 3] = j + 2;
-    indices[i + 4] = j + 1;
+    indices[i + 3] = j + 1;
+    indices[i + 4] = j + 2;
     indices[i + 5] = j + 3;
   }
 
@@ -502,18 +502,18 @@ void graphics_draw(const vec2 position, const vec2 uv, const vec2 size, const fl
 
   data.vertices[start + 2].type = 0;
   data.vertices[start + 2].position[0] = position[0] + half_size[0];  
-  data.vertices[start + 2].position[1] = position[1] - half_size[1];
+  data.vertices[start + 2].position[1] = position[1] + half_size[1];
   data.vertices[start + 2].uv[0] = uv_norm[0] + uv_size[0];
-  data.vertices[start + 2].uv[1] = uv_norm[1] + uv_size[1];
+  data.vertices[start + 2].uv[1] = uv_norm[1];
   glm_vec2_sub(data.vertices[start + 2].position, position, data.vertices[start + 2].position);
   glm_vec2_rotate(data.vertices[start + 2].position, rotation, data.vertices[start + 2].position);
   glm_vec2_add(data.vertices[start + 2].position, position, data.vertices[start + 2].position);
     
   data.vertices[start + 3].type = 0;
   data.vertices[start + 3].position[0] = position[0] + half_size[0];  
-  data.vertices[start + 3].position[1] = position[1] + half_size[1];
+  data.vertices[start + 3].position[1] = position[1] - half_size[1];
   data.vertices[start + 3].uv[0] = uv_norm[0] + uv_size[0];
-  data.vertices[start + 3].uv[1] = uv_norm[1];  
+  data.vertices[start + 3].uv[1] = uv_norm[1] + uv_size[1];  
   glm_vec2_sub(data.vertices[start + 3].position, position, data.vertices[start + 3].position);
   glm_vec2_rotate(data.vertices[start + 3].position, rotation, data.vertices[start + 3].position);
   glm_vec2_add(data.vertices[start + 3].position, position, data.vertices[start + 3].position);
@@ -545,16 +545,16 @@ void graphics_draw_circle(const vec2 position, const float radius, const vec3 co
 
   data.vertices[start + 2].type = 1;
   data.vertices[start + 2].position[0] = position[0] + half_radius;  
-  data.vertices[start + 2].position[1] = position[1] - half_radius;
+  data.vertices[start + 2].position[1] = position[1] + half_radius;
   data.vertices[start + 2].local_position[0] = 1.0f;
-  data.vertices[start + 2].local_position[1] = -1.0f;
+  data.vertices[start + 2].local_position[1] = 1.0f;
   glm_vec3_copy(color, data.vertices[start + 2].color);
     
   data.vertices[start + 3].type = 1;
   data.vertices[start + 3].position[0] = position[0] + half_radius;  
-  data.vertices[start + 3].position[1] = position[1] + half_radius;
+  data.vertices[start + 3].position[1] = position[1] - half_radius;
   data.vertices[start + 3].local_position[0] = 1.0f;
-  data.vertices[start + 3].local_position[1] = 1.0f;
+  data.vertices[start + 3].local_position[1] = -1.0f;
   glm_vec3_copy(color, data.vertices[start + 3].color);
 
   data.quad_count += 1;
@@ -602,3 +602,30 @@ void graphics_draw_rect(const vec2 position, const vec2 size, const float rotati
 
   data.quad_count += 1;
 }
+
+void graphics_draw_quad(const vec2 a, const vec2 b, const vec2 c, const vec2 d, const vec3 color) {
+  
+  if (data.quad_count >= MAX_QUADS) {
+    graphics_flush();
+  }
+    
+  size_t start = data.quad_count * 4;
+  data.vertices[start + 0].type = 2;
+  glm_vec2_copy(a, data.vertices[start + 0].position);
+  glm_vec3_copy(color, data.vertices[start + 0].color);
+  
+  data.vertices[start + 1].type = 2;
+  glm_vec2_copy(b, data.vertices[start + 1].position);
+  glm_vec3_copy(color, data.vertices[start + 1].color);
+
+  data.vertices[start + 2].type = 2;
+  glm_vec2_copy(c, data.vertices[start + 2].position);
+  glm_vec3_copy(color, data.vertices[start + 2].color);
+    
+  data.vertices[start + 3].type = 2;
+  glm_vec2_copy(d, data.vertices[start + 3].position);
+  glm_vec3_copy(color, data.vertices[start + 3].color);
+
+  data.quad_count += 1;
+}
+
