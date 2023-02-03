@@ -23,8 +23,8 @@ uninstall:
 	if exist C:\MinGW\include\jot del /f /s /q C:\MinGW\include\jot
 	if exist C:\MinGW\include\jot rmdir /s /q C:\MinGW\include\jot
 
-demo: install examples/main.c
-	gcc -o build/demo.exe -Iinclude -Lbuild examples/main.c -ljot
+hello: install examples/hello.c
+	gcc -o build/demo.exe -Iinclude -Lbuild examples/hello.c -ljot
 
 balls: install examples/balls.c
 	gcc -o build/balls.exe -Iinclude -Lbuild examples/balls.c -ljot
@@ -48,8 +48,8 @@ uninstall:
 	rm -f /usr/local/lib/libjot.a
 	rm -f -r /usr/local/include/jot
 
-hello: build/libjot.a examples/main.c
-	gcc $(INCLUDES) -L./build -lglfw -ljot -o build/$@ examples/main.c
+hello: build/libjot.a examples/hello.c
+	gcc $(INCLUDES) -L./build -lglfw -ljot -o build/$@ examples/hello.c
 
 balls: build/libjot.a examples/balls.c
 	gcc $(INCLUDES) -Iinclude -Lbuild -o build/$@ examples/balls.c -ljot -lglfw
