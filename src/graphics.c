@@ -596,7 +596,7 @@ void graphics_draw_rect(const vec2 position, const vec2 size, const float rotati
 
   data.vertices[start + 2].type = 2;
   data.vertices[start + 2].position[0] = position[0] + half_size[0];  
-  data.vertices[start + 2].position[1] = position[1] - half_size[1];
+  data.vertices[start + 2].position[1] = position[1] + half_size[1];
   glm_vec3_copy(color, data.vertices[start + 2].color);
   glm_vec2_sub(data.vertices[start + 2].position, position, data.vertices[start + 2].position);
   glm_vec2_rotate(data.vertices[start + 2].position, rotation, data.vertices[start + 2].position);
@@ -604,7 +604,7 @@ void graphics_draw_rect(const vec2 position, const vec2 size, const float rotati
     
   data.vertices[start + 3].type = 2;
   data.vertices[start + 3].position[0] = position[0] + half_size[0];  
-  data.vertices[start + 3].position[1] = position[1] + half_size[1];
+  data.vertices[start + 3].position[1] = position[1] - half_size[1];
   glm_vec3_copy(color, data.vertices[start + 3].color);
   glm_vec2_sub(data.vertices[start + 3].position, position, data.vertices[start + 3].position);
   glm_vec2_rotate(data.vertices[start + 3].position, rotation, data.vertices[start + 3].position);
