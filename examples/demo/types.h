@@ -46,13 +46,19 @@ typedef struct Particle {
 #define LEVEL_COLUMNS 30
 #define LEVEL_ROWS 20
 
-typedef uint8_t tile_id;
+typedef uint8_t tile_type;
 
 #define TILE_AIR 0
 #define TILE_BLOCK 1
 
+typedef uint8_t collision_type;
+
+#define COLLISION_NONE 0
+#define COLLISION_TDLR 1
+
 typedef struct Level {
-  tile_id tiles[LEVEL_COLUMNS * LEVEL_ROWS];  
+  tile_type tiles[LEVEL_COLUMNS * LEVEL_ROWS];
+  collision_type collision_map[LEVEL_COLUMNS * LEVEL_ROWS];
 } Level;
 
 

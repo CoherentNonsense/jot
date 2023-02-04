@@ -95,9 +95,9 @@ bool jot_key_up(enum KeyCode key) {
 }
 
 float jot_cursor_x() {
-  return input_cursor_x() / graphics_get_screen_scale() - (graphics_get_pixel_width() / 2.0f);
+  return input_cursor_x() / graphics_get_screen_scale();
 };
 
 float jot_cursor_y() {
-  return (graphics_get_pixel_height() / 2.0f) - input_cursor_y() / graphics_get_screen_scale();
+  return graphics_get_pixel_height() - input_cursor_y() / graphics_get_screen_scale();
 };

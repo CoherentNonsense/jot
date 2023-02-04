@@ -395,10 +395,9 @@ void graphics_init(const char* title, const vec2 size) {
   free(indices);
   
   // matrices
-  vec2 half_size = {size[0] / 2.0f, size[1] / 2.0f};
   glm_ortho(
-    -half_size[0], half_size[0],
-    -half_size[1], half_size[1],
+    0, size[0],
+    0, size[1],
     0.1f, 10.0f,
     data.projection
   );

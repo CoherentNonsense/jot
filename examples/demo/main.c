@@ -22,13 +22,16 @@ int main() {
   data.player.transform.size.y = 16;
   data.player.transform.size.x = 9;
 
+
   // temp level
   for (int x = 0; x < LEVEL_COLUMNS; ++x) {
     for (int y = 0; y < LEVEL_ROWS; ++y) {
       if (x == 0 || y == 0 || x == LEVEL_COLUMNS - 1 || y == LEVEL_ROWS - 1) {
         data.level.tiles[y * LEVEL_COLUMNS + x] = TILE_BLOCK;
+        data.level.collision_map[y * LEVEL_COLUMNS + x] = COLLISION_TDLR;
       } else {
         data.level.tiles[y * LEVEL_COLUMNS + x] = TILE_AIR;
+        data.level.collision_map[y * LEVEL_COLUMNS + x] = COLLISION_NONE;
       }
     }
   }
@@ -47,6 +50,7 @@ int main() {
     // run game systems
     system_player_input(&data);
     system_physics(&data);
+    system_collision(&data);
 
     // TODO: move to systems
     Player* player = &data.player;
@@ -55,6 +59,7 @@ int main() {
     player->tongue[0].x += 2.0f;
     for (int i = 1; i < 5; ++i) {
       player->tongue[i].y -= 1.0f;
+      player->tongue[i].x -= 0.25f * (sinf(data.time * 5.0f) + 2.0f + sinf(data.time * 2.0f)) / 2.0f;
       if ((player->tongue[i].x - player->tongue[i - 1].x) * (player->tongue[i].x - player->tongue[i - 1].x) > 900) {
         player->tongue[i] = player->tongue[i - 1];
       } else {
@@ -88,8 +93,8 @@ int main() {
     for (int x = 0; x < LEVEL_COLUMNS; ++x) {
       for (int y = 0; y < LEVEL_ROWS; ++y) {
         if (data.level.tiles[y * LEVEL_COLUMNS + x] == TILE_BLOCK) {
-          float pos_x = ((float)x - ((float)LEVEL_COLUMNS / 2.0f)) * 16.0f;
-          float pos_y = ((float)y - ((float)LEVEL_ROWS / 2.0f)) * 16.0f;
+          float pos_x = (float)x * 16.0f;
+          float pos_y = (float)y * 16.0f;
           jot_draw_rect(pos_x + 8, pos_y + 8, 16, 16, 0, 1.0f, 0.8f, 0.5f);
         }
       }
