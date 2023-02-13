@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 
-
 #define MAX_ENEMIES 20
 #define MAX_BULLETS 20
 #define MAX_PARTICLES 20
@@ -23,13 +22,31 @@ typedef struct Transform {
   Vec2 size;
 } Transform;
 
+typedef struct Spritesheet {
+  Vec2 uv;
+  float speed;
+  uint8_t current;
+  uint8_t length;
+} Spritesheet;
+
+typedef struct Animator {
+  Spritesheet* spritesheets;
+  float next_frame;
+  uint8_t current;
+  uint8_t length;
+  uint8_t flipX;
+  uint8_t flipY;
+} Animator;
+
 typedef struct Player {
   Transform transform;
+  Animator animator;
   Vec2 tongue[5];
 } Player;
 
 typedef struct Enemy {
   Transform transform;
+  Animator animator;
 } Enemy;
 
 typedef struct Bullet {
@@ -54,7 +71,10 @@ typedef uint8_t tile_type;
 typedef uint8_t collision_type;
 
 #define COLLISION_NONE 0
-#define COLLISION_TDLR 1
+#define COLLISION_TOP 0b1 << 0
+#define COLLISION_BOTTOM 0b1 << 1
+#define COLLISION_LEFT 0b1 << 2
+#define COLLISION_RIGHT 0b1 << 3
 
 typedef struct Level {
   tile_type tiles[LEVEL_COLUMNS * LEVEL_ROWS];
@@ -78,5 +98,8 @@ typedef struct GameData {
   Particle particles[MAX_PARTICLES];
   Level level;
 } GameData;
+
+void game_data_init(GameData* data);
+void game_data_exit(GameData* data);
 
 #endif

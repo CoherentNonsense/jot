@@ -47,11 +47,11 @@ void jot_draw_sprite(const float u, const float v, const float uv_width, const f
   graphics_draw((vec2){x, y}, (vec2){u, v}, (vec2){width, height}, (vec2){uv_width, uv_height}, rotation);
 }
 
-void jot_draw_circle(const float x, const float y, const float radius, const float r, const float g, const float b) {
+void jot_fill_circle(const float x, const float y, const float radius, const float r, const float g, const float b) {
   graphics_draw_circle((vec2){x, y}, (float)radius, (vec3){r, g, b});
 }
 
-void jot_draw_rect(const float x, const float y, const float width, const float height, const float rotation, const float r, const float g, const float b) {
+void jot_fill_rect(const float x, const float y, const float width, const float height, const float rotation, const float r, const float g, const float b) {
   graphics_draw_rect((vec2){x, y}, (vec2){width, height}, rotation, (vec3){r, g, b});
 }
 

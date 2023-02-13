@@ -54,6 +54,9 @@ hello: build/libjot.a examples/hello.c
 balls: build/libjot.a examples/balls.c
 	gcc $(INCLUDES) -Iinclude -Lbuild -o build/$@ examples/balls.c -ljot -lglfw
 
+centipede: build/libjot.a examples/centipede.c
+	gcc $(INCLUDES) -Iinclude -Lbuild -o build/$@ examples/centipede.c -ljot -lglfw
+
 demo: build/libjot.a examples/demo/main.c examples/demo/types.c examples/demo/systems.c
 	gcc $(INCLUDES) -Iinclude -Lbuild -o build/$@ examples/demo/main.c examples/demo/types.c examples/demo/systems.c -ljot -lglfw
 

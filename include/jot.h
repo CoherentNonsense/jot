@@ -39,8 +39,8 @@ void jot_texture(const char* path);
 // -------
 void jot_clear(const float r, const float g, const float b);
 void jot_draw_sprite(const float u, const float v, const float uv_width, const float uv_height,  const float x, const float y, const float width, const float height, const float rotation);
-void jot_draw_circle(const float x, const float y, const float radius, const float r, const float g, const float b);
-void jot_draw_rect(const float x, const float y, const float width, const float height, const float rotation, const float r, const float g, const float b);
+void jot_fill_circle(const float x, const float y, const float radius, const float r, const float g, const float b);
+void jot_fill_rect(const float x, const float y, const float width, const float height, const float rotation, const float r, const float g, const float b);
 
 void jot_draw_quad(
   const float x_1, const float y_1,

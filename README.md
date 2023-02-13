@@ -6,6 +6,8 @@ Super minimal graphics library
 I'm still figuring out what a good api would look like so there could be a lot of breaking changes.
 `
 
+<img src="misc/centipede.gif" alt="IK centipede">
+
 <img src="misc/balls.gif" alt="buncha balls">
 
 ## What it does

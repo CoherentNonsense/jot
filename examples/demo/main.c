@@ -5,36 +5,17 @@
 #include <math.h>
 #include <stdio.h>
 
+
 GameData data;
-float anim_timer;
-int anim_frame;
 
 int main() {
 
-  // initialise jot
-  // --------------
+  // initialise
+  // ----------
   jot_init("Demo Game", PIXEL_WIDTH, PIXEL_HEIGHT);
   jot_texture("resources/spritesheet.png");
 
-
-  // initialise game data
-  // --------------------
-  data.player.transform.size.y = 16;
-  data.player.transform.size.x = 9;
-
-
-  // temp level
-  for (int x = 0; x < LEVEL_COLUMNS; ++x) {
-    for (int y = 0; y < LEVEL_ROWS; ++y) {
-      if (x == 0 || y == 0 || x == LEVEL_COLUMNS - 1 || y == LEVEL_ROWS - 1) {
-        data.level.tiles[y * LEVEL_COLUMNS + x] = TILE_BLOCK;
-        data.level.collision_map[y * LEVEL_COLUMNS + x] = COLLISION_TDLR;
-      } else {
-        data.level.tiles[y * LEVEL_COLUMNS + x] = TILE_AIR;
-        data.level.collision_map[y * LEVEL_COLUMNS + x] = COLLISION_NONE;
-      }
-    }
-  }
+  game_data_init(&data);
 
 
   // game loop
@@ -51,6 +32,7 @@ int main() {
     system_player_input(&data);
     system_physics(&data);
     system_collision(&data);
+    system_animator(&data);
 
     // TODO: move to systems
     Player* player = &data.player;
@@ -58,8 +40,9 @@ int main() {
     player->tongue[0].y += 2.0f;
     player->tongue[0].x += 2.0f;
     for (int i = 1; i < 5; ++i) {
-      player->tongue[i].y -= 1.0f;
-      player->tongue[i].x -= 0.25f * (sinf(data.time * 5.0f) + 2.0f + sinf(data.time * 2.0f)) / 2.0f;
+      player->tongue[i].y -= 0.5f;
+      player->tongue[i].y -= 0.9f * (sinf(data.time * 20.0f + i) + 2.0f + sinf(data.time * 8.0f + i * 2.0f)) / 2.0f;
+      player->tongue[i].x -= 0.2f * (sinf(data.time * 13.0f) + 2.0f + sinf(data.time * 7.0f)) / 2.0f;
       if ((player->tongue[i].x - player->tongue[i - 1].x) * (player->tongue[i].x - player->tongue[i - 1].x) > 900) {
         player->tongue[i] = player->tongue[i - 1];
       } else {
@@ -68,17 +51,21 @@ int main() {
       }
     }
 
-    jot_clear(0.0f, 0.0f, 0.0f);
+    jot_clear(0.3f, 0.4f, 0.3f);
 
-    if (anim_timer < data.time) {
-      anim_timer = data.time + 0.08f;
-      anim_frame = (anim_frame + 1) % 7;
-    }
     float stretch = 0;
     if (player->transform.velocity.y * 2.0f > -4) {
       stretch += player->transform.velocity.y * 2.0f;
     }
-    jot_draw_sprite(16 * anim_frame, 0, 16, 16, player_pos->x, player_pos->y, 16, 16 + stretch, player->transform.velocity.x / 15.0f);
+
+    Spritesheet* spritesheet = &player->animator.spritesheets[player->animator.current];
+    jot_draw_sprite(
+      spritesheet->uv.x + (16.0f * spritesheet->current), spritesheet->uv.y,
+      16, 16,
+      player_pos->x, player_pos->y,
+      16, 16 + stretch,
+      player->transform.velocity.x / 15.0f
+    );
 
     for (int i = 1; i < 5; ++i) {
       Vec2* pos = &data.player.tongue[i];
@@ -95,14 +82,17 @@ int main() {
         if (data.level.tiles[y * LEVEL_COLUMNS + x] == TILE_BLOCK) {
           float pos_x = (float)x * 16.0f;
           float pos_y = (float)y * 16.0f;
-          jot_draw_rect(pos_x + 8, pos_y + 8, 16, 16, 0, 1.0f, 0.8f, 0.5f);
+          jot_fill_rect(pos_x + 8, pos_y + 8, 8, 8, 0, 1.0f, 0.8f, 0.5f);
         }
       }
     }
+
+    jot_draw_sprite(0, 16, 16, 16, 24, 24, 16, 16, 0);
   }  
 
 
   // clean up
+  game_data_exit(&data);
   jot_terminate();
 
   return 0;
