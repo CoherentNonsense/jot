@@ -102,8 +102,8 @@ float b2 = 0.4f;
 
 // solves the IK and draws a 2 segment leg
 void draw_leg(Vec2 hip, Vec2 foot, int flip) {
-  float limb_length_0 = 12;
-  float limb_length_1 = 12;
+  float limb_length_0 = 14;
+  float limb_length_1 = 14;
   float hip_to_foot_dist = vec2_mag(vec2_sub(foot, hip));
   float cos_angle_0 = ((hip_to_foot_dist * hip_to_foot_dist) + (limb_length_0 * limb_length_0) - (limb_length_1 * limb_length_1)) / (2 * hip_to_foot_dist * limb_length_0);
   float angle_0 = acosf(cos_angle_0);

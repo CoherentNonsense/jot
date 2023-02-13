@@ -11,23 +11,26 @@ all: build/libjot.dll
 init:
 	mkdir build
 
-build/libjot.dll: $(OFILES)
-	gcc -shared -o $@ $(OFILES) -L./libs/glfw/build/src -lglfw3 -lgdi32 -lopengl32
-
-install: uninstall build/libjot.dll
-	xcopy build\libjot.dll C:\MinGW\lib
+build/libjot.a: $(OFILES)
+	ar -rc $@ $(OFILES)
+	
+install: uninstall build/libjot.a
+	xcopy build\libjot.a C:\MinGW\lib
 	xcopy include C:\MinGW\include\jot /E /I
 
 uninstall:
-	del C:\MinGW\lib\libjot.dll
+	del C:\MinGW\lib\libjot.a
 	if exist C:\MinGW\include\jot del /f /s /q C:\MinGW\include\jot
 	if exist C:\MinGW\include\jot rmdir /s /q C:\MinGW\include\jot
 
 hello: install examples/hello.c
-	gcc -o build/demo.exe -Iinclude -Lbuild examples/hello.c -ljot
+	gcc -o build/hello.exe -Iinclude -Lbuild examples/hello.c -ljot -lglfw3 -lgdi32 -lopengl32
 
 balls: install examples/balls.c
-	gcc -o build/balls.exe -Iinclude -Lbuild examples/balls.c -ljot
+	gcc -o build/balls.exe -Iinclude -Lbuild examples/balls.c -ljot -lglfw3 -lgdi32 -lopengl32
+
+centipede: install examples/centipede.c
+	gcc -o build/centipede.exe -Iinclude -Lbuild examples/centipede.c -ljot -lglfw3 -lgdi32 -lopengl32
 
 # -lglfw3 -lgdi32 -lopengl32
 else
