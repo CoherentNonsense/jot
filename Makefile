@@ -27,10 +27,10 @@ hello: install examples/hello.c
 	gcc -o build/hello.exe -Iinclude -Lbuild examples/hello.c -ljot -lglfw3 -lgdi32 -lopengl32
 
 balls: install examples/balls.c
-	gcc -o build/balls.exe -Iinclude -Lbuild examples/balls.c -ljot -lglfw3 -lgdi32 -lopengl32
+	gcc -o build/balls.exe -O3 -Iinclude -Lbuild examples/balls.c -ljot -lglfw3 -lgdi32 -lopengl32
 
 centipede: install examples/centipede.c
-	gcc -o build/centipede.exe -Iinclude -Lbuild examples/centipede.c -ljot -lglfw3 -lgdi32 -lopengl32
+	gcc -o build/centipede.exe -O3 -Iinclude -Lbuild examples/centipede.c -ljot -lglfw3 -lgdi32 -lopengl32
 
 # -lglfw3 -lgdi32 -lopengl32
 else

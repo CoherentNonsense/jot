@@ -1,33 +1,29 @@
 #include "jot.h"
-#include <jot/jot.h>
 #include <math.h>
 
 int main() {
   
   // initialisation
   // --------------
-  // window
-  jot_init("Demo", 320, 180);
-
-  // texture
-  jot_texture("resources/spritesheet.png");
-
+  open_window("Demo", 320, 180);
+  load_texture("resources/spritesheet.png");
+  
   // game loop
   // ---------
-  while (jot_update()) {
-    float time = jot_get_time();
+  while (update_window()) {    
+    float time = get_time();
 
-    jot_clear(0.1f, 0.2f, 0.3f);
+    clear_screen(0.1f, 0.2f, 0.3f);
 
-    float ship_x = sinf(time) * 40.0f;
-    float ship_y = cosf(time) * 40.0f;
+    float ship_x = sinf(time) * 40.0f + 160;
+    float ship_y = cosf(time) * 40.0f + 90;
 
-    jot_draw_sprite(0, 0, 16, 16, ship_x, ship_y, 16, 16, -time);
+    draw_sprite(0, 0, 16, 16, ship_x, ship_y, 16, 16, -time);
   }
 
   // shutdown
   // --------
-  jot_terminate();
+  close_window();
 
   return 0;
 }

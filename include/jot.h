@@ -24,25 +24,25 @@ enum KeyCode {
 
 // core
 // ----
-void jot_init(const char* title, const int width, const int height);
-void jot_terminate();
+void open_window(const char* title, const int width, const int height);
+void close_window();
 
-bool jot_update();
-float jot_get_time();
+bool update_window();
+float get_time();
 
 // assets
 // ------
-void jot_texture(const char* path);
+void load_texture(const char* path);
 // jot_aud jot_load_mp3(const char* path);
 
 // drawing
 // -------
-void jot_clear(const float r, const float g, const float b);
-void jot_draw_sprite(const float u, const float v, const float uv_width, const float uv_height,  const float x, const float y, const float width, const float height, const float rotation);
-void jot_fill_circle(const float x, const float y, const float radius, const float r, const float g, const float b);
-void jot_fill_rect(const float x, const float y, const float width, const float height, const float rotation, const float r, const float g, const float b);
+void clear_screen(const float r, const float g, const float b);
+void draw_sprite(const float u, const float v, const float uv_width, const float uv_height,  const float x, const float y, const float width, const float height, const float rotation);
+void fill_circle(const float x, const float y, const float radius, const float r, const float g, const float b);
+void fill_rect(const float x, const float y, const float width, const float height, const float rotation, const float r, const float g, const float b);
 
-void jot_draw_quad(
+void fill_quad(
   const float x_1, const float y_1,
   const float x_2, const float y_2,
   const float x_3, const float y_3,
@@ -50,7 +50,7 @@ void jot_draw_quad(
   const float r, const float g, const float b
 );
 
-void jot_draw_line(
+void draw_line(
   const float x_1, const float y_1, const float width_1,
   const float x_2, const float y_2, const float width_2,
   const float r, const float g, const float b
@@ -58,11 +58,11 @@ void jot_draw_line(
 
 // input
 // -----
-bool jot_key(enum KeyCode key);
-bool jot_key_up(enum KeyCode key);
-bool jot_key_down(enum KeyCode key);
-float jot_cursor_x();
-float jot_cursor_y();
+bool get_key(enum KeyCode key);
+bool get_key_up(enum KeyCode key);
+bool get_key_down(enum KeyCode key);
+float cursor_x();
+float cursor_y();
 
 // audio (TODO)
 // -----

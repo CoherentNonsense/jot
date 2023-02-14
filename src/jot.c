@@ -7,20 +7,20 @@
 #include <math.h>
 #include <stdio.h>
 
-void jot_init(const char* title, const int width, const int height) {
+void open_window(const char* title, const int width, const int height) {
   graphics_init(title, (vec2){width, height});
   input_set_callback(graphics_get_window());
 }
 
-void jot_terminate() {
+void close_window() {
   graphics_terminate();
 }
 
-float jot_get_time() {
+float get_time() {
   return glfwGetTime();
 }
 
-bool jot_update() {
+bool update_window() {
   // update display
   graphics_end_draw();
   
@@ -34,28 +34,28 @@ bool jot_update() {
   return !graphics_should_close();
 }
 
-void jot_texture(const char* path) {
+void load_texture(const char* path) {
   unsigned int texture = graphics_load_texture(path);
   graphics_use_texture(texture);
 }
 
-void jot_clear(const float r, const float g, const float b) {
+void clear_screen(const float r, const float g, const float b) {
   graphics_clear(r, g, b);
 }
 
-void jot_draw_sprite(const float u, const float v, const float uv_width, const float uv_height, const float x, const float y, const float width, const float height, const float rotation) {
+void draw_sprite(const float u, const float v, const float uv_width, const float uv_height, const float x, const float y, const float width, const float height, const float rotation) {
   graphics_draw((vec2){x, y}, (vec2){u, v}, (vec2){width, height}, (vec2){uv_width, uv_height}, rotation);
 }
 
-void jot_fill_circle(const float x, const float y, const float radius, const float r, const float g, const float b) {
+void fill_circle(const float x, const float y, const float radius, const float r, const float g, const float b) {
   graphics_draw_circle((vec2){x, y}, (float)radius, (vec3){r, g, b});
 }
 
-void jot_fill_rect(const float x, const float y, const float width, const float height, const float rotation, const float r, const float g, const float b) {
+void fill_rect(const float x, const float y, const float width, const float height, const float rotation, const float r, const float g, const float b) {
   graphics_draw_rect((vec2){x, y}, (vec2){width, height}, rotation, (vec3){r, g, b});
 }
 
-void jot_draw_quad(
+void fill_quad(
   const float x_1, const float y_1,
   const float x_2, const float y_2,
   const float x_3, const float y_3,
@@ -65,7 +65,7 @@ void jot_draw_quad(
   graphics_draw_quad((vec2){x_1, y_1}, (vec2){x_2, y_2}, (vec2){x_3, y_3}, (vec2){x_4, y_4}, (vec3){r, g, b});
 }
 
-void jot_draw_line(
+void draw_line(
   const float x_1, const float y_1, const float width_1,
   const float x_2, const float y_2, const float width_2,
   const float r, const float g, const float b
@@ -82,22 +82,22 @@ void jot_draw_line(
 
 // input
 // -----
-bool jot_key(enum KeyCode key) {
+bool get_key(enum KeyCode key) {
   return input_key(key);
 }
 
-bool jot_key_down(enum KeyCode key) {
+bool get_key_down(enum KeyCode key) {
   return input_key_down(key);
 }
 
-bool jot_key_up(enum KeyCode key) {
+bool get_key_up(enum KeyCode key) {
   return input_key_up(key);
 }
 
-float jot_cursor_x() {
+float cursor_x() {
   return input_cursor_x() / graphics_get_screen_scale();
 };
 
-float jot_cursor_y() {
+float cursor_y() {
   return graphics_get_pixel_height() - input_cursor_y() / graphics_get_screen_scale();
 };

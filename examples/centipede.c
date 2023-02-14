@@ -63,27 +63,27 @@ void draw_leg(Vec2 hip, Vec2 foot, int flip) {
 
   Vec2 knee = (Vec2){ hip.x - sinf(atan - angle_0) * limb_length_0, hip.y + cosf(atan - angle_0) * limb_length_0 };
   Vec2 result = (Vec2){ knee.x - sinf(atan - angle_0 + 3.14159 - angle_1) * limb_length_1, knee.y + cosf(atan - angle_0 + 3.14159 - angle_1) * limb_length_1 };
-  jot_draw_line(hip.x, hip.y, 5, knee.x, knee.y, 5, r1, g1, b1);
-  jot_draw_line(knee.x, knee.y, 5, result.x, result.y, 5, r1, g1, b1);
-  jot_fill_circle(knee.x, knee.y, 5, r2, g2, b2);
-  jot_fill_circle(result.x, result.y, 5, r2, g2, b2);
+  draw_line(hip.x, hip.y, 5, knee.x, knee.y, 5, r1, g1, b1);
+  draw_line(knee.x, knee.y, 5, result.x, result.y, 5, r1, g1, b1);
+  fill_circle(knee.x, knee.y, 2.5f, r2, g2, b2);
+  fill_circle(result.x, result.y, 2.5f, r2, g2, b2);
 }
 
 int main() {
-  jot_init("Centipede", 600, 400);
+  open_window("Centipede", 600, 400);
 
-  while (jot_update()) {
+  while (update_window()) {
 
     // timing
-    float new_time = jot_get_time();
+    float new_time = get_time();
     float delta_time = new_time - time;
     time = new_time;
 
 
     // update gecko
     Vec2 cursor = (Vec2){
-      jot_cursor_x(),
-      jot_cursor_y()
+      cursor_x(),
+      cursor_y()
     };
 
     // move head
@@ -128,7 +128,7 @@ int main() {
         }
 
       } else {
-        if (!limb_r->moving && vec2_mag(vec2_sub(limb_l->foot, target_l)) > 20) {
+        if (!limb_r->moving && vec2_mag(vec2_sub(limb_l->foot, target_l)) > 25) {
           limb_l->start_time = time;
           limb_l->from = limb_l->foot;
           limb_l->target = target_l;
@@ -147,7 +147,7 @@ int main() {
         }
 
       } else {
-        if (!limb_l->moving && vec2_mag(vec2_sub(limb_r->foot, target_r)) > 20) {
+        if (!limb_l->moving && vec2_mag(vec2_sub(limb_r->foot, target_r)) > 25) {
           limb_r->start_time = time;
           limb_r->from = limb_r->foot;
           limb_r->target = target_r;
@@ -157,7 +157,7 @@ int main() {
     }
 
     // draw centipede
-    jot_clear(0.09, 0.08, 0.09);
+    clear_screen(0.09, 0.08, 0.09);
     BodySegment* body = centipede.body_segments;
 
     // draw the legs
@@ -179,7 +179,7 @@ int main() {
     // draw the body segments
     for (int i = BODY_SEGS - 1; i >= 0; --i) {
       float progress = (float)(BODY_SEGS - i) / BODY_SEGS;
-      jot_fill_circle(body[i].pos.x, body[i].pos.y, sinf((float)(i - 2) * 3.14159 * 2 / (float)BODY_SEGS_PER_LIMB + (3.14159 / 2)) * 2 + 19, lerp(r2, r1, progress), lerp(g2, g1, progress), lerp(b2, b1, progress));
+      fill_circle(body[i].pos.x, body[i].pos.y, sinf((float)(i - 2) * 3.14159 * 2 / (float)BODY_SEGS_PER_LIMB + (3.14159 / 2)) * 1 + 10, lerp(r2, r1, progress), lerp(g2, g1, progress), lerp(b2, b1, progress));
     }
 
     // draw the head
@@ -187,11 +187,11 @@ int main() {
     float head_angle2 = atan2f(cursor.y - head->pos.y, cursor.x - head->pos.x) + (2 * 3.14159f / 3.0f);
     Vec2 antena_offset1 = (Vec2){ sinf(head_angle1), -cosf(head_angle1) };
     Vec2 antena_offset2 = (Vec2){ sinf(head_angle2), -cosf(head_angle2) };
-    jot_draw_line(head->pos.x + antena_offset1.x * 8, head->pos.y + antena_offset1.y * 8, 5, head->pos.x + antena_offset1.x * 20, head->pos.y + antena_offset1.y * 20, 3, r1, g1, b1);
-    jot_draw_line(head->pos.x + antena_offset2.x * 8, head->pos.y + antena_offset2.y * 8, 5, head->pos.x + antena_offset2.x * 20, head->pos.y + antena_offset2.y * 20, 3, r1, g1, b1);
+    draw_line(head->pos.x + antena_offset1.x * 8, head->pos.y + antena_offset1.y * 8, 5, head->pos.x + antena_offset1.x * 20, head->pos.y + antena_offset1.y * 20, 3, r1, g1, b1);
+    draw_line(head->pos.x + antena_offset2.x * 8, head->pos.y + antena_offset2.y * 8, 5, head->pos.x + antena_offset2.x * 20, head->pos.y + antena_offset2.y * 20, 3, r1, g1, b1);
   }
 
-  jot_terminate();
+  close_window();
 
   return 0;
 }

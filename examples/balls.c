@@ -29,29 +29,29 @@ void spawn_ball() {
   if (spawned < BALL_COUNT) {
     balls[spawned].last_position = (Vec2){ 801.0f, 701.0f };
     balls[spawned].position = (Vec2){ 800.0f, 700.0f };
-    balls[spawned].radius = 15.0f;
+    balls[spawned].radius = 8.0f;
     spawned += 1;
   }
 }
 
 int main() {
-  jot_init("Balls", WIDTH, HEIGHT);
+  open_window("Balls", WIDTH, HEIGHT);
       
   // game loop
   // ---------
-  game_time = jot_get_time();
-  while (jot_update()) {
+  game_time = get_time();
+  while (update_window()) {
     // get timing
-    float new_time = jot_get_time();
+    float new_time = get_time();
     float delta_time = new_time - game_time;
     game_time = new_time;
     
     
     if (1.0f / delta_time > 60.0f && game_time > spawn_timer) {
-      spawn_timer = game_time + 0.05f;
+      spawn_timer = game_time + 0.025f;
       spawn_ball();
     }
-    
+        
     // update balls
     const int steps = 8;
     const float sub_delta_time = delta_time / (float)steps;
@@ -89,13 +89,15 @@ int main() {
       }
     }
      
-    jot_clear(0.05f, 0.06f, 0.08f);
-    jot_fill_circle(800.0f, 450.0f, radius, 0.0f, 0.0f, 0.0f);
+    clear_screen(0.05f, 0.06f, 0.08f);
+    fill_circle(800.0f, 450.0f, radius, 0.0f, 0.0f, 0.0f);
     for (int i = 0; i < spawned; ++i) {
       Ball* ball = &balls[i];
-      jot_fill_circle(ball->position.x, ball->position.y, ball->radius, 0.2f, 1.0f, 0.5f);
+      fill_circle(ball->position.x, ball->position.y, ball->radius, 0.2f, 1.0f, 0.5f);
     }
   }
+  
+  close_window();
   
   return 0;
 }
