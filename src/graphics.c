@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stb_image/stb_image.h>
 
-#define MAX_QUADS 100
+#define MAX_QUADS 200
 #define MAX_VERTICES MAX_QUADS * 4
 #define MAX_INDICES MAX_QUADS * 6
 
@@ -534,34 +534,32 @@ void graphics_draw_circle(const vec2 position, const float radius, const vec3 co
   if (data.quad_count >= MAX_QUADS) {
     graphics_flush();
   }
-  
-  float half_radius = radius / 2.0f;
-  
+    
   size_t start = data.quad_count * 4;
   data.vertices[start + 0].type = 1;
-  data.vertices[start + 0].position[0] = position[0] - half_radius;
-  data.vertices[start + 0].position[1] = position[1] - half_radius;
+  data.vertices[start + 0].position[0] = position[0] - radius;
+  data.vertices[start + 0].position[1] = position[1] - radius;
   data.vertices[start + 0].local_position[0] = -1.0f;
   data.vertices[start + 0].local_position[1] = -1.0f;
   glm_vec3_copy(color, data.vertices[start + 0].color);
   
   data.vertices[start + 1].type = 1;
-  data.vertices[start + 1].position[0] = position[0] - half_radius;
-  data.vertices[start + 1].position[1] = position[1] + half_radius;
+  data.vertices[start + 1].position[0] = position[0] - radius;
+  data.vertices[start + 1].position[1] = position[1] + radius;
   data.vertices[start + 1].local_position[0] = -1.0f;
   data.vertices[start + 1].local_position[1] = 1.0f;
   glm_vec3_copy(color, data.vertices[start + 1].color);
 
   data.vertices[start + 2].type = 1;
-  data.vertices[start + 2].position[0] = position[0] + half_radius;  
-  data.vertices[start + 2].position[1] = position[1] + half_radius;
+  data.vertices[start + 2].position[0] = position[0] + radius;  
+  data.vertices[start + 2].position[1] = position[1] + radius;
   data.vertices[start + 2].local_position[0] = 1.0f;
   data.vertices[start + 2].local_position[1] = 1.0f;
   glm_vec3_copy(color, data.vertices[start + 2].color);
     
   data.vertices[start + 3].type = 1;
-  data.vertices[start + 3].position[0] = position[0] + half_radius;  
-  data.vertices[start + 3].position[1] = position[1] - half_radius;
+  data.vertices[start + 3].position[0] = position[0] + radius;  
+  data.vertices[start + 3].position[1] = position[1] - radius;
   data.vertices[start + 3].local_position[0] = 1.0f;
   data.vertices[start + 3].local_position[1] = -1.0f;
   glm_vec3_copy(color, data.vertices[start + 3].color);
