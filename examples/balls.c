@@ -27,9 +27,9 @@ struct Ball balls[BALL_COUNT];
 
 void spawn_ball() {
   if (spawned < BALL_COUNT) {
-    balls[spawned].last_position = (Vec2){ 500.0f, 450.5f };
-    balls[spawned].position = (Vec2){ 500.0f, 450.0f };
-    balls[spawned].radius = 10.0f;
+    balls[spawned].last_position = (Vec2){ 801.0f, 701.0f };
+    balls[spawned].position = (Vec2){ 800.0f, 700.0f };
+    balls[spawned].radius = 15.0f;
     spawned += 1;
   }
 }
@@ -46,12 +46,8 @@ int main() {
     float delta_time = new_time - game_time;
     game_time = new_time;
     
-    if (1.0f / delta_time < 60.0f) {
-      printf("%d %f\n", spawned, 1.0f / delta_time);
-      break;
-    }
     
-    if (game_time > spawn_timer) {
+    if (1.0f / delta_time > 60.0f && game_time > spawn_timer) {
       spawn_timer = game_time + 0.05f;
       spawn_ball();
     }
