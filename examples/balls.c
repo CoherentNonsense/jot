@@ -20,7 +20,7 @@ typedef struct Ball {
 // game data
 // ---------
 int spawned = 0;
-float spawn_timer = 0.0f;
+int spawn_timer = 0;
 float game_time = 0.0f;
 const float radius = 400.0f;
 struct Ball balls[BALL_COUNT];
@@ -43,19 +43,17 @@ int main() {
   while (update_window()) {
     // get timing
     float new_time = get_time();
-    float delta_time = new_time - game_time;
     game_time = new_time;
-    
-    
-    if (1.0f / delta_time > 60.0f && game_time > spawn_timer) {
-      spawn_timer = game_time + 0.025f;
-      spawn_ball();
-    }
-        
+            
     // update balls
     const int steps = 8;
-    const float sub_delta_time = delta_time / (float)steps;
+    const float sub_delta_time = 1 / 75.0f / (float)steps;
     for (int step = 0; step < steps; ++step) {
+      spawn_timer += 1;
+      if (spawn_timer > 10) {
+        spawn_timer = 0;
+        spawn_ball();
+      }
       
       for (int i = 0; i < spawned; ++i) {
         Ball* ball = &balls[i];

@@ -16,21 +16,21 @@ static void set_key(enum KeyCode keycode, int state) {
 
 static enum KeyCode convert_key(int key) {
   if (key >= GLFW_KEY_A && key <= GLFW_KEY_Z)
-    return key - GLFW_KEY_A + JOT_KEY_A;
+    return key - GLFW_KEY_A + KEY_A;
   
   switch (key) {
-    case GLFW_KEY_UP: return JOT_KEY_UP;
-    case GLFW_KEY_DOWN: return JOT_KEY_DOWN;
-    case GLFW_KEY_LEFT: return JOT_KEY_LEFT;
-    case GLFW_KEY_RIGHT: return JOT_KEY_RIGHT;
-    case GLFW_KEY_SPACE: return JOT_KEY_SPACE;
-    case GLFW_KEY_LEFT_SHIFT: return JOT_KEY_LSHIFT;
-    case GLFW_KEY_RIGHT_SHIFT: return JOT_KEY_RSHIFT;
-    case GLFW_KEY_ENTER: return JOT_KEY_ENTER;
-    case GLFW_KEY_TAB: return JOT_KEY_TAB;
+    case GLFW_KEY_UP: return KEY_UP;
+    case GLFW_KEY_DOWN: return KEY_DOWN;
+    case GLFW_KEY_LEFT: return KEY_LEFT;
+    case GLFW_KEY_RIGHT: return KEY_RIGHT;
+    case GLFW_KEY_SPACE: return KEY_SPACE;
+    case GLFW_KEY_LEFT_SHIFT: return KEY_LSHIFT;
+    case GLFW_KEY_RIGHT_SHIFT: return KEY_RSHIFT;
+    case GLFW_KEY_ENTER: return KEY_ENTER;
+    case GLFW_KEY_TAB: return KEY_TAB;
     
-    case GLFW_MOUSE_BUTTON_LEFT: return JOT_LMOUSE;
-    case GLFW_MOUSE_BUTTON_RIGHT: return JOT_RMOUSE;
+    case GLFW_MOUSE_BUTTON_LEFT: return LMOUSE;
+    case GLFW_MOUSE_BUTTON_RIGHT: return RMOUSE;
     default: return -1;
   }
 }

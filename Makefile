@@ -55,13 +55,13 @@ hello: build/libjot.a examples/hello.c
 	gcc $(INCLUDES) -L./build -lglfw -ljot -o build/$@ examples/hello.c
 
 balls: build/libjot.a examples/balls.c
-	gcc $(INCLUDES) -Iinclude -Lbuild -o build/$@ examples/balls.c -ljot -lglfw
+	gcc $(INCLUDES) -Iinclude -Lbuild -o build/$@ examples/balls.c -ljot -lglfw3
 
 centipede: build/libjot.a examples/centipede.c
-	gcc $(INCLUDES) -Iinclude -Lbuild -o build/$@ examples/centipede.c -ljot -lglfw
+	gcc $(INCLUDES) -Iinclude -Lbuild -o build/$@ examples/centipede.c -ljot -lglfw3
 
 demo: build/libjot.a examples/demo/main.c examples/demo/types.c examples/demo/systems.c
-	gcc $(INCLUDES) -Iinclude -Lbuild -o build/$@ examples/demo/main.c examples/demo/types.c examples/demo/systems.c -ljot -lglfw
+	gcc $(INCLUDES) -Iinclude -Lbuild -o build/$@ examples/demo/main.c examples/demo/types.c examples/demo/systems.c -ljot -lglfw3
 
 clean:
 	rm -r -f build demo build/libjot.a

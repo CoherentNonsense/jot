@@ -47,6 +47,11 @@ void draw_sprite(const float u, const float v, const float uv_width, const float
   graphics_draw((vec2){x, y}, (vec2){u, v}, (vec2){width, height}, (vec2){uv_width, uv_height}, rotation);
 }
 
+// TODO: Make graphics_draw_circle -> graphics_draw_ellipse
+void fill_ellipse(const float x, const float y, const float width, const float height, const float rotation, const float r, const float g, const float b) {
+  graphics_draw_circle((vec2){x, y}, (float)width / 2.0f, (vec3){r, g, b});
+}
+
 void fill_circle(const float x, const float y, const float radius, const float r, const float g, const float b) {
   graphics_draw_circle((vec2){x, y}, (float)radius, (vec3){r, g, b});
 }
