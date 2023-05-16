@@ -10,13 +10,13 @@
 void system_player_input(GameData* data) {
   Player* player = &data->player;
 
-  if (jot_key_down(JOT_KEY_W)) {
+  if (get_key_down(KEY_W)) {
     player->transform.velocity.y = 10.0f;
   }
-  if (jot_key(JOT_KEY_A)) {
+  if (get_key(KEY_A)) {
     player->transform.velocity.x -= 0.5f;
   }
-  if (jot_key(JOT_KEY_D)) {
+  if (get_key(KEY_D)) {
     player->transform.velocity.x += 0.5f;
   }
 }

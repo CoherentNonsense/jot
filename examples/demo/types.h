@@ -60,8 +60,8 @@ typedef struct Particle {
 
 // level
 // -----
-#define LEVEL_COLUMNS 30
-#define LEVEL_ROWS 20
+#define LEVEL_COLUMNS 22
+#define LEVEL_ROWS 15
 
 typedef uint8_t tile_type;
 

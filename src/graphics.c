@@ -105,6 +105,7 @@ struct GraphicsData {
   unsigned int shader;
   unsigned int quad_count;
   unsigned int texture;
+  float aspect_ratio;
   vec2 texture_size;
   vec2 game_size;
   ivec2 window_size;
@@ -135,6 +136,53 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
   // height will be significantly larger than specified on retina displays.
   data.window_size[0] = width;
   data.window_size[1] = height;
+
+  // resize framebuffer
+  float aspect_ratio = (float)width / (float)height;
+  float screen_width;
+  float screen_height;
+  if (aspect_ratio >= data.aspect_ratio) {
+    screen_width = 1.0f / aspect_ratio * data.aspect_ratio;
+    screen_height = 1.0f;
+  } else {
+    screen_width = 1.0f;
+    screen_height = 1.0f * aspect_ratio / data.aspect_ratio;
+  }
+
+  data.framebuffer.vertices[0] = (struct FramebufferVertex){
+    .position = { -screen_width, -screen_height },
+    .uv = { 0.0f, 0.0f },
+  };
+  data.framebuffer.vertices[1] = (struct FramebufferVertex){
+    .position = { -screen_width, screen_height },
+    .uv = { 0.0f, 1.0f },
+  };
+  data.framebuffer.vertices[2] = (struct FramebufferVertex){
+    .position = { screen_width, -screen_height },
+    .uv = { 1.0f, 0.0f },
+  };
+  data.framebuffer.vertices[3] = (struct FramebufferVertex){
+    .position = { screen_width, -screen_height },
+    .uv = { 1.0f, 0.0f },
+  };
+  data.framebuffer.vertices[4] = (struct FramebufferVertex){
+    .position = { -screen_width, screen_height },
+    .uv = { 0.0f, 1.0f },
+  };
+  data.framebuffer.vertices[5] = (struct FramebufferVertex){
+    .position = { screen_width, screen_height },
+    .uv = { 1.0f, 1.0f },
+  };
+
+  glBindVertexArray(data.framebuffer.vao);  
+  glBindBuffer(GL_ARRAY_BUFFER, data.framebuffer.vbo);
+
+  glBufferData(
+    GL_ARRAY_BUFFER,
+    sizeof(struct FramebufferVertex) * 6,
+    data.framebuffer.vertices,
+    GL_STATIC_DRAW
+  );
 }
 
 unsigned int graphics_load_texture(const char* path) {
@@ -187,6 +235,7 @@ void graphics_init(const char* title, const vec2 size) {
   data.vertices = malloc(sizeof(struct Vertex) * MAX_VERTICES);
   
   glm_vec2_copy(size, data.game_size);
+  data.aspect_ratio = size[0] / size[1];
   int initial_width = 1000;
   int initial_height = 1000.0f / (size[0] / size[1]);
     
@@ -204,9 +253,8 @@ void graphics_init(const char* title, const vec2 size) {
   glfwGetFramebufferSize(data.window, &data.window_size[0], &data.window_size[1]);
   
   glfwMakeContextCurrent(data.window);
-  glfwSetWindowAspectRatio(data.window, size[0], size[1]);
   glfwSwapInterval(1);
-  
+ 
   int gladLoadGl_result = gladLoadGL(glfwGetProcAddress);
   if (!gladLoadGl_result) {
     fprintf(stderr, "gladLoadGL failed");
@@ -448,14 +496,16 @@ void graphics_poll() {
   glfwPollEvents();
 }
 
-void graphics_start_draw() {
+void graphics_start_draw() { 
+  glClear(GL_COLOR_BUFFER_BIT);
+
   glBindFramebuffer(GL_FRAMEBUFFER, data.framebuffer.fbo);
   glViewport(0, 0, data.game_size[0], data.game_size[1]);
 
   shader_use(data.shader);
   glBindVertexArray(data.vao);
   glBindBuffer(GL_ARRAY_BUFFER, data.vbo);
-  glBindTexture(GL_TEXTURE_2D, data.texture);  
+  glBindTexture(GL_TEXTURE_2D, data.texture);
 }
 
 void graphics_end_draw() {

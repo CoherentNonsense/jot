@@ -12,8 +12,8 @@ static void player_init(Player* player) {
   animator->spritesheets = malloc(sizeof(Spritesheet) * animator->length);
 
   // run anim
-  animator->spritesheets[0].length = 6;
-  animator->spritesheets[0].uv = (Vec2){16, 0};
+  animator->spritesheets[0].length = 1;
+  animator->spritesheets[0].uv = (Vec2){0, 0};
   animator->spritesheets[0].speed = 0.1f;
 }
 
@@ -39,6 +39,9 @@ void game_data_init(GameData* data) {
       }
     }
   }
+  
+  data->level.tiles[5 * LEVEL_COLUMNS + 7] = TILE_BLOCK;
+  data->level.collision_map[5 * LEVEL_COLUMNS + 7] = COLLISION_TOP;
 }
 
 void game_data_exit(GameData* data) {

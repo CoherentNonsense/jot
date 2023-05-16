@@ -32,6 +32,10 @@ balls: install examples/balls.c
 centipede: install examples/centipede.c
 	gcc -o build/centipede.exe -O3 -Iinclude -Lbuild examples/centipede.c -ljot -lglfw3 -lgdi32 -lopengl32
 
+DEMO_SOURCE = examples/demo/main.c examples/demo/systems.c examples/demo/types.c
+demo: install ${DEMO_SOURCE}
+	gcc -o build/demo.exe -O3 -Iinclude -Lbuild ${DEMO_SOURCE} -ljot -lglfw3 -lgdi32 -lopengl32
+
 # -lglfw3 -lgdi32 -lopengl32
 else
 
